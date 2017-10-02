@@ -1,0 +1,16 @@
+language: python
+python: "3.6"
+cache:
+  pip: true
+
+# Use container-based infrastructure
+dist: trusty
+sudo: false
+
+install:
+  - pip install wheel flake8 isort
+  - pip install -e .[testing,docs]
+
+script:
+  - flake8 wagtailautotagging
+  - isort --check-only --diff --recursive wagtailautotagging

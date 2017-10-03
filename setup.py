@@ -4,6 +4,12 @@ from wagtailautotagging import __version__
 
 from setuptools import setup, find_packages
 
+gc_language_extras = [
+    'google-cloud-language>=0.29.0,<0.30',
+    'beautifulsoup4>=4.5.1'
+]
+
+
 setup(
     name='wagtailautotagging',
     version=__version__,
@@ -30,5 +36,8 @@ setup(
     install_requires=[
         'wagtail>=1.12',
     ],
+    extras_require={
+        'gc_language': gc_language_extras,
+    },
     zip_safe=False,
 )

@@ -9,7 +9,7 @@ from wagtail.wagtailcore.fields import StreamField
 from wagtailautotagging.backends.base import BaseAutotaggingBackend
 
 
-class AutotaggingBackend(BaseAutotaggingBackend):
+class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):
     CHARS_PER_TEXT_RECORD = 1000
 
     def __init__(self, *arg, **kwargs):
@@ -69,3 +69,7 @@ class AutotaggingBackend(BaseAutotaggingBackend):
             text = Truncator(text).chars(length, truncate='')
 
         return text
+
+
+# Shortcut
+AutotaggingBackend = GoogleCloudLanguageAutotaggingBackend

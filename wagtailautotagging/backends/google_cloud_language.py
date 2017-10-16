@@ -19,8 +19,8 @@ class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):
         credentials = credentials.with_scopes(('https://www.googleapis.com/auth/cloud-platform',))
         self.client = language.LanguageServiceClient(credentials=credentials)
 
-    def get_tags(self, page):
-        text = self._extract_text(page)
+    def get_tags(self, obj):
+        text = self._extract_text(obj)
         text = self._prepare_text(text)
         if not text:
             return
@@ -35,15 +35,15 @@ class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):
 
         return tags
 
-    def _extract_text(self, page):
-        autotagging_source_fields = getattr(page._meta.model, 'autotagging_source_fields', None)
+    def _extract_text(self, obj):
+        autotagging_source_fields = getattr(obj._meta.model, 'autotagging_source_fields', None)
         if not autotagging_source_fields:
             return
 
         html_pieces = []
         for source_field in autotagging_source_fields:
-            field = source_field.get_field(page.__class__)
-            field_value = source_field.get_value(page)
+            field = source_field.get_field(obj.__class__)
+            field_value = source_field.get_value(obj)
             if isinstance(field, StreamField):
                 field_value = ' '.join(field_value)
 

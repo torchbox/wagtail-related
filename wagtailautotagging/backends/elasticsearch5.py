@@ -99,9 +99,8 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
         query = {
             "query": {
                 "more_like_this": {
-                    # It's possible to specify fields to search, so we can use autotagging_source_fields,
+                    # It's possible to specify `fields` to search, so we can use autotagging_source_fields,
                     # but by default elasticsearch uses all string fields to find similar documents.
-                    # TODO: Decide if we need to use autotagging_source_fields here.
                     "like": [
                         existing_doc_ref
                     ],

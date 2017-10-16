@@ -9,6 +9,10 @@ gc_language_extras = [
     'beautifulsoup4>=4.5.1'
 ]
 
+elasticsearch5_extras = [
+    'elasticsearch>=5,<6'
+]
+
 
 setup(
     name='wagtailautotagging',
@@ -38,6 +42,7 @@ setup(
     ],
     extras_require={
         'gc_language': gc_language_extras,
+        'elasticsearch5': elasticsearch5_extras,
     },
     zip_safe=False,
 )

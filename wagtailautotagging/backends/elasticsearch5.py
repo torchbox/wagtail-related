@@ -14,6 +14,8 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
 
         # TODO: Add check that wagtailsearch_backend is Elasticsearch5SearchBackend
         wagtailsearch_backend = self.params.get('wagtailsearch_backend', 'default')
+        self.min_term_freq = self.params.get('min_term_freq', 1)
+        self.min_doc_freq = self.params.get('min_doc_freq', 1)
         self.search_backend = get_search_backend(backend=wagtailsearch_backend)
 
     def get_tags(self, obj):
@@ -101,12 +103,9 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
                 "more_like_this": {
                     # It's possible to specify `fields` to search, so we can use autotagging_source_fields,
                     # but by default elasticsearch uses all string fields to find similar documents.
-                    "like": [
-                        existing_doc_ref
-                    ],
-                    # TODO: Decided if we need this to be configurable
-                    "min_term_freq": 1,
-                    "min_doc_freq": 1
+                    "like": existing_doc_ref,
+                    "min_term_freq": self.min_term_freq,
+                    "min_doc_freq": self.min_doc_freq
                 }
             }
         }

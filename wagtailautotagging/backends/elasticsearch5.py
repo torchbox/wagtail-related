@@ -1,4 +1,5 @@
-from django.db.models import Q
+from collections import OrderedDict
+
 from taggit.models import TaggedItemBase, Tag
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailsearch.backends import get_search_backend
@@ -15,40 +16,49 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
         wagtailsearch_backend = self.params.get('wagtailsearch_backend', 'default')
         self.search_backend = get_search_backend(backend=wagtailsearch_backend)
 
-    def get_tags(self, page):
-        if not isinstance(page, Indexed):
+    def get_tags(self, obj):
+        if not isinstance(obj, Indexed):
             return []
 
-        results = self._get_similar_pages(page)
+        results = self._get_similar_items(obj)
         tags = self._extract_tags(results)
         return tags
 
     def _extract_tags(self, results):
-        tag_filter = Q()
-        for page in results:
-            if not page:
-                continue
+        tag_pks = []
+        tag_counts = {}
 
-            for field in page._meta.get_fields():
+        for result_obj in results:
+            for field in result_obj._meta.get_fields():
                 if field.is_relation and issubclass(field.related_model, TaggedItemBase):
-                    pages_field = getattr(page, field.name)
-                    tag_filter |= Q(pk__in=pages_field.values_list('tag_id'))
+                    field = getattr(result_obj, field.name)
+                    obj_tag_pks = list(field.values_list('tag_id', flat=True))
+                    tag_pks += obj_tag_pks
+                    for obj_tag_pk in obj_tag_pks:
+                        tag_counts[obj_tag_pk] = tag_counts.get(obj_tag_pk, 0) + 1
 
-        if not tag_filter:
+        if not tag_pks:
             return []
 
-        # TODO: Add weights for each tag (based on count?)
-        tags = Tag.objects.filter(tag_filter).distinct()
-        tags = [tag.name for tag in tags]
+        tag_counts = OrderedDict(sorted(tag_counts.items(), key=lambda i: i[1], reverse=True))
 
-        return tags
+        results_dict = Tag.objects.in_bulk(tag_pks)
+        tag_names = []
+        for tag_pk in tag_counts.keys():
+            try:
+                tag_names.append(results_dict[tag_pk].name)
+            except KeyError:
+                # Just ignore, if there is not obj with this pk
+                pass
 
-    def _get_similar_pages(self, page):
-        model = page.__class__
+        return tag_names
+
+    def _get_similar_items(self, obj):
+        model = obj.__class__
 
         params = dict(
             index=self.search_backend.get_index_for_model(model).name,
-            body=self._get_query(page),
+            body=self._get_query(obj),
             _source=False,
             from_=0,
             stored_fields='pk'
@@ -57,21 +67,29 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
         hits = self.search_backend.es.search(**params)
 
         # Get pks from results
-        pks = [hit['fields']['pk'][0] for hit in hits['hits']['hits']]
+        pks = [int(hit['fields']['pk'][0]) for hit in hits['hits']['hits']]
 
-        # Find objects in database and add them to dict
-        # Queryset must contain specific objects. Otherwise we would not be able
-        # to get tags from models
-        queryset = Page.objects.filter(pk__in=pks).specific()
-        results = dict((str(obj.pk), obj) for obj in queryset)
+        if isinstance(obj, Page):
+            # If we work with pages, `queryset` must contain specific objects.
+            # Otherwise we would not be able to get tags from models
+            queryset = Page.objects.specific()
+        else:
+            queryset = model.objects.all()
+
+        results_dict = queryset.in_bulk(pks)
 
         # Return results in order given by Elasticsearch
-        return [results.get(str(pk), None) for pk in pks if results[str(pk)]]
+        for pk in pks:
+            try:
+                yield results_dict[pk]
+            except KeyError:
+                # Just ignore, if there is not obj with this pk
+                pass
 
-    def _get_query(self, page):
-        mapping = self.search_backend.mapping_class(page.__class__)
+    def _get_query(self, obj):
+        mapping = self.search_backend.mapping_class(obj.__class__)
         doc_type = mapping.get_document_type()
-        document_id = mapping.get_document_id(page)
+        document_id = mapping.get_document_id(obj)
 
         existing_doc_ref = {
             '_type': doc_type,

@@ -13,11 +13,18 @@ class BaseTagSuggestingFieldPanel(BaseFieldPanel):
     def render_as_field(self):
         backend = get_autotagging_backend(self.backend_name)
 
+        # TODO: Decide if we need cache here
         related_tags = None
         if self.instance and self.instance.pk:
-            # TODO: Decide if we need cache here
-            # TODO: Exclude tags that already exist
-            related_tags = backend.get_tags(self.instance)
+            # Get tag suggestions
+            related_tags = set(backend.get_tags(self.instance))
+
+            # Get existing tags from a page
+            obj_field = getattr(self.instance, self.field_name)
+            existing_tags = set([tag.name for tag in obj_field.all()])
+
+            # Exclude tags that already exist
+            related_tags = related_tags - existing_tags
 
         context = {
             'field': self.bound_field,

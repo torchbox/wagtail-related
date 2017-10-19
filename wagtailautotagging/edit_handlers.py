@@ -43,6 +43,8 @@ class BaseTagSuggestingFieldPanel(BaseFieldPanel):
 class TagSuggestingFieldPanel(FieldPanel):
     def __init__(self, *args, **kwargs):
         self.suggested_tags_limit = kwargs.pop('suggested_tags_limit', None)
+        self.backend_name = kwargs.pop('backend_name', None)
+
         super().__init__(*args, **kwargs)
 
     def bind_to_model(self, model):
@@ -54,5 +56,8 @@ class TagSuggestingFieldPanel(FieldPanel):
         }
         if self.suggested_tags_limit:
             base['suggested_tags_limit'] = self.suggested_tags_limit
+
+        if self.backend_name:
+            base['backend_name'] = self.backend_name
 
         return type(str('_TagSuggestingFieldPanel'), (BaseTagSuggestingFieldPanel,), base)

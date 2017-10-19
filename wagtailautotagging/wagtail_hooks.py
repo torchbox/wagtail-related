@@ -7,7 +7,17 @@ from wagtail.wagtailcore import hooks
 def editor_js():
     return format_html(
         """
-            <script src="{0}"></script>
+            <script src="{}"></script>
         """,
-        static('wagtailautotagging/admin_widget.js'),
+        static('wagtailautotagging/js/admin_widget.js'),
+    )
+
+
+@hooks.register('insert_editor_css')
+def editor_css():
+    return format_html(
+        """
+            <link rel="stylesheet" href="{}">
+        """,
+        static('wagtailautotagging/css/admin_widget.css'),
     )

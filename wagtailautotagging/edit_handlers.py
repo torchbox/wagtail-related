@@ -30,7 +30,7 @@ class BaseTagSuggestingFieldPanel(BaseFieldPanel):
             related_tags = (element for element in related_tags if element not in existing_tags)
 
             # Do not render all tags: use only most relevant ones
-            related_tags = itertools.islice(related_tags, self.suggested_tags_limit)
+            related_tags = list(itertools.islice(related_tags, self.suggested_tags_limit))
 
         context = {
             'field': self.bound_field,

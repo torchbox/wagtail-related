@@ -6,11 +6,18 @@ from setuptools import setup, find_packages
 
 gc_language_extras = [
     'google-cloud-language>=0.29.0,<0.30',
-    'beautifulsoup4>=4.5.1'
+    'beautifulsoup4>=4.5.1',
+    'html5lib>=0.999,<1',
 ]
 
 elasticsearch5_extras = [
-    'elasticsearch>=5,<6'
+    'elasticsearch>=5,<6',
+]
+
+dandelion_extras = [
+    'beautifulsoup4>=4.5.1',
+    'html5lib>=0.999,<1',
+    'requests>=2.11.1,<3.0',
 ]
 
 
@@ -43,6 +50,7 @@ setup(
     extras_require={
         'gc_language': gc_language_extras,
         'elasticsearch5': elasticsearch5_extras,
+        'dandelion': dandelion_extras,
     },
     zip_safe=False,
 )

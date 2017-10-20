@@ -1,8 +1,5 @@
 import json
 
-from django.conf import settings
-from django.core.urlresolvers import reverse
-
 from wagtail.wagtailadmin.widgets import AdminTagWidget
 
 

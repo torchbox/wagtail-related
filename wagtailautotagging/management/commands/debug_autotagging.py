@@ -11,9 +11,16 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         # Positional arguments
         parser.add_argument('page_id', type=int)
+        parser.add_argument(
+            '--backend',
+            action='store',
+            dest='backend',
+            default='default',
+            help='Backend name. Uses "default" backend if not specified.',
+        )
 
     def handle(self, *args, **options):
-        backend = get_autotagging_backend()
+        backend = get_autotagging_backend(options['backend'])
         page = Page.objects.get(pk=options['page_id']).specific
 
         tags = backend.get_tags(page)

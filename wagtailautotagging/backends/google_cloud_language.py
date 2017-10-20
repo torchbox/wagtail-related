@@ -9,7 +9,7 @@ from wagtailautotagging.utils import extract_text
 
 
 class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):
-    CHARS_PER_TEXT_RECORD = 1000
+    chars_per_text_record = 1000
 
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, **kwargs)
@@ -38,10 +38,11 @@ class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):
     def _prepare_text(self, text):
         # Google Natural Language API counts usage by "Text records",
         # so we should be able to limit usage
-        # by defining max number text records per document
+        # by defining max number of text records per document.
+        # See https://cloud.google.com/natural-language/pricing
         max_text_records = self.params.get('max_text_records_per_document')
         if max_text_records:
-            length = self.CHARS_PER_TEXT_RECORD * max_text_records
+            length = self.chars_per_text_record * max_text_records
             text = Truncator(text).chars(length, truncate='')
 
         return text

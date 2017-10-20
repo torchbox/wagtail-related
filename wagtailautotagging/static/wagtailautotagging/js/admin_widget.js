@@ -9,9 +9,18 @@ function initTagSuggestingField(id) {
             var tagSuggestion = $(e.target);
 
             $tagitField.tagit('createTag', tagSuggestion.text());
-            tagSuggestion.remove();
-            if ($tagSuggestionsContainer.find('.tag').length === 0) {
-                $tagSuggestionsContainer.remove();
+            tagSuggestion.hide();
+            if ($tagSuggestionsContainer.find('.tag:visible').length === 0) {
+                $tagSuggestionsContainer.hide();
+            }
+        });
+
+        $tagitField.tagit({
+            beforeTagRemoved: function(event, ui) {
+                var tagLabel = ui.tagLabel.replace(/^"(.*?)"$/, "$1");
+                var tagSelector = ".tag[data-tag='" + tagLabel + "']";
+                $tagSuggestionsContainer.find(tagSelector).show();
+                $tagSuggestionsContainer.show();
             }
         });
     });

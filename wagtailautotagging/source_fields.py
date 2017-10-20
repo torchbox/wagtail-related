@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class BaseAutotaggingSourceField(object):
+class AutotaggingSourceField(object):
     def __init__(self, field_name):
         self.field_name = field_name
 
@@ -24,8 +24,3 @@ class BaseAutotaggingSourceField(object):
 
     def __repr__(self):
         return '<%s: %s>' % (self.__class__.__name__, self.field_name)
-
-
-class AutotaggingSourceField(BaseAutotaggingSourceField):
-    pass
-

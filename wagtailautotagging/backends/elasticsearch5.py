@@ -6,6 +6,7 @@ from wagtail.wagtailsearch.backends import get_search_backend
 from wagtail.wagtailsearch.index import Indexed
 
 from wagtailautotagging.backends.base import BaseAutotaggingBackend
+from wagtailautotagging.utils import extract_text
 
 
 class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
@@ -56,11 +57,15 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
         return tag_names
 
     def _get_similar_items(self, obj):
+        like_text = extract_text(obj)
+        if not like_text:
+            return []
+
         model = obj.__class__
 
         params = dict(
             index=self.search_backend.get_index_for_model(model).name,
-            body=self._get_query(obj),
+            body=self._get_query(like_text),
             _source=False,
             from_=0,
             stored_fields='pk'
@@ -88,22 +93,13 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
                 # Just ignore, if there is not obj with this pk
                 pass
 
-    def _get_query(self, obj):
-        mapping = self.search_backend.mapping_class(obj.__class__)
-        doc_type = mapping.get_document_type()
-        document_id = mapping.get_document_id(obj)
-
-        existing_doc_ref = {
-            '_type': doc_type,
-            '_id': document_id,
-        }
-
+    def _get_query(self, like_text):
         query = {
             "query": {
                 "more_like_this": {
                     # It's possible to specify `fields` to search, so we can use autotagging_source_fields,
                     # but by default elasticsearch uses all string fields to find similar documents.
-                    "like": existing_doc_ref,
+                    "like": like_text,
                     "min_term_freq": self.min_term_freq,
                     "min_doc_freq": self.min_doc_freq
                 }

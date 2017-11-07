@@ -22,7 +22,7 @@ class BaseTagSuggestingFieldPanel(BaseFieldPanel):
             # Get tag suggestions
             related_tags = backend.get_tags(self.instance)
 
-            # Get existing tags from a page
+            # Get existing tags from an object
             obj_field = getattr(self.instance, self.field_name)
             existing_tags = set([tag.name for tag in obj_field.all()])
 

@@ -1,3 +1,8 @@
+.tag-suggestions {
+    margin-top: 5px;
+}
+
 .tag-suggestions .tag {
     cursor: pointer;
+    margin-right: 5px;
 }

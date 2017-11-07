@@ -1,7 +1,7 @@
 {% load wagtailadmin_tags %}
 <div class="field {{ field|fieldtype }} {{ field|widgettype }} {{ field_classes }}">
     {% if show_label|default_if_none:True %}{{ field.label_tag }}{% endif %}
-    <div class="field-content">
+    <div class="js-field-content field-content">
         <div class="input {{ input_classes }} ">
             {% block form_field %}
                 {{ field|render_with_errors }}
@@ -10,16 +10,13 @@
             {# This span only used on rare occasions by certain types of input #}
             <span></span>
         </div>
-        {% if related_tags %}
-            <div class="tag-suggestions">
-                Relevant tags:
-                <span>
-                    {% for related_tag in related_tags %}
-                        <span class="tagit-label tag" data-tag="{{ related_tag }}">{{ related_tag }}</span>
-                    {% endfor %}
-                </span>
-            </div>
-        {% endif %}
+        <div class="js-tag-suggestions tag-suggestions" style="display: none;">
+            Relevant tags:
+            <span class="js-tag-suggestions--wrapper"></span>
+        </div>
+        <div>
+            <a class="js-tag-refresh" data-refresh-url="{{ suggest_tags_url }}" href="#">Refresh tags</a>
+        </div>
         {% if show_help_text|default_if_none:True and field.help_text %}
             <p class="help">{{ field.help_text }}</p>
         {% endif %}

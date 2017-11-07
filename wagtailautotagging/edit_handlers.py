@@ -20,7 +20,7 @@ class BaseTagSuggestingFieldPanel(BaseFieldPanel):
         related_tags = None
         if self.instance and self.instance.pk:
             # Get tag suggestions
-            related_tags = backend.get_tags(self.instance)
+            related_tags = backend.get_tags(self.instance.get_latest_revision_as_page())
 
             # Get existing tags from an object
             obj_field = getattr(self.instance, self.field_name)

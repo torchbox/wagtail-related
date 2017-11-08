@@ -20,7 +20,24 @@ class BaseTagSuggestingFieldPanel(BaseFieldPanel):
             'backend_name': self.backend_name,
             'tags_limit': self.suggested_tags_limit,
         }
-        suggest_tags_url = reverse('wagtailautotagging:suggest_tags', args=(self.instance.pk, ))
+
+        if self.instance and self.instance.pk:
+            # It's an existing object
+            suggest_tags_url = reverse(
+                'wagtailautotagging:suggest_tags_on_edit',
+                kwargs={'pk': self.instance.pk}
+            )
+        else:
+            # It's a new object
+            # TODO: Review it
+            # To suggest tags on page creation we have to pass parent page id.
+            # We do that using `self.bound_field.form.parent_page`
+            # which is hacky way, but I can't think of better way, at the moment.
+            suggest_tags_url = reverse(
+                'wagtailautotagging:suggest_tags_on_create',
+                kwargs={'parent_pk': self.bound_field.form.parent_page.pk}
+            )
+
         suggest_tags_url += '?' + urllib.parse.urlencode(query_data)
 
         context = {

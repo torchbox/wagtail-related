@@ -1,6 +1,7 @@
 function initTagSuggestingField(id) {
     $(document).on('ready', function () {
         var $tagitField = $('#' + id);
+        var $form = $tagitField.parents('form');
         var $tagitFieldContainer = $tagitField.parents('.js-field-content');
         var $tagSuggestionsContainer = $tagitFieldContainer.find('.js-tag-suggestions');
         var $tagSuggestionsListContainer = $tagSuggestionsContainer.find('.js-tag-suggestions--wrapper');
@@ -53,7 +54,10 @@ function initTagSuggestingField(id) {
         });
 
         function loadData(loadURL) {
-            $.ajax(loadURL, {
+            $.ajax({
+                url: loadURL,
+                method: 'POST',
+                data: $form.serialize(),
                 success: function (data) {
                     renderTags(data.suggested_tags);
                 }
@@ -68,18 +72,20 @@ function initTagSuggestingField(id) {
 
             $tagSuggestionsListContainer.empty();
 
-            suggestedTags.forEach(function (tagLabel) {
-                var $htmlTag = generateHTMLForTag(tagLabel);
+            if (suggestedTags) {
+                suggestedTags.forEach(function (tagLabel) {
+                    var $htmlTag = generateHTMLForTag(tagLabel);
 
-                if (existingTags.indexOf(tagLabel) >= 0) {
-                    // If tag is already exists we need to
-                    // append it, but hide
-                    $htmlTag.hide();
-                }
-                $tagSuggestionsListContainer.append($htmlTag);
-                // Insert space between tags to enable word wrap
-                $tagSuggestionsListContainer.append(" ");
-            });
+                    if (existingTags.indexOf(tagLabel) >= 0) {
+                        // If tag is already exists we need to
+                        // append it, but hide
+                        $htmlTag.hide();
+                    }
+                    $tagSuggestionsListContainer.append($htmlTag);
+                    // Insert space between tags to enable word wrap
+                    $tagSuggestionsListContainer.append(" ");
+                });
+            }
 
             showOrHideTagSuggestionsContainer();
         }

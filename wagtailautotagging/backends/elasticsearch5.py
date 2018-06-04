@@ -1,9 +1,9 @@
 from collections import OrderedDict
 
 from taggit.models import TaggedItemBase, Tag
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailsearch.backends import get_search_backend
-from wagtail.wagtailsearch.index import Indexed
+from wagtail.core.models import Page
+from wagtail.search.backends import get_search_backend
+from wagtail.search.index import Indexed
 
 from wagtailautotagging.backends.base import BaseAutotaggingBackend
 from wagtailautotagging.utils import extract_text

@@ -45,7 +45,7 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Site Management',
     ],
     install_requires=[
-        'wagtail>=1.12',
+        'wagtail>=2.0',
     ],
     extras_require={
         'gc_language': gc_language_extras,

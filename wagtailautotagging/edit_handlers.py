@@ -2,18 +2,59 @@ import itertools
 
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
 
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, BaseFieldPanel
+from wagtail.admin.edit_handlers import FieldPanel
+
 from wagtailautotagging import get_autotagging_backend
 from wagtailautotagging.widgets import AdminTagSuggestingWidget
 
 
-class BaseTagSuggestingFieldPanel(BaseFieldPanel):
+class TagSuggestingFieldPanel(FieldPanel):
+
+    def __init__(
+        self, field_name, heading='', classname='', help_text='',
+        suggested_tags_limit=10, backend_name='default',
+        *args, **kwargs
+):
+        super().__init__(field_name, *args, **kwargs)
+        self.heading = heading
+        self.classname = classname
+        self.help_text = help_text
+        self.suggested_tags_limit = suggested_tags_limit
+        self.backend_name = backend_name
+
+    def clone(self):
+        return self.__class__(
+            field_name=self.field_name,
+            heading=self.heading,
+            classname=self.classname,
+            help_text=self.help_text,
+            suggested_tags_limit=self.suggested_tags_limit,
+            backend_name=self.backend_name,
+        )
+
+    object_template = "wagtailautotagging/edit_handlers/single_field_panel.html"
+
+    def render_as_object(self):
+        return mark_safe(render_to_string(self.object_template, {
+            'self': self,
+            self.TEMPLATE_VAR: self,
+            'field': self.bound_field,
+            'related_tags': self.get_related_tags(),
+        }))
+
     field_template = 'wagtailautotagging/edit_handlers/field_panel_field.html'
-    backend_name = 'default'
-    suggested_tags_limit = 10
 
     def render_as_field(self):
+        context = {
+            'field': self.bound_field,
+            'field_type': self.field_type(),
+            'related_tags': self.get_related_tags(),
+        }
+        return mark_safe(render_to_string(self.field_template, context))
+
+    def get_related_tags(self):
         backend = get_autotagging_backend(self.backend_name)
 
         # TODO: Decide if we need cache here
@@ -32,32 +73,4 @@ class BaseTagSuggestingFieldPanel(BaseFieldPanel):
             # Do not render all tags: use only most relevant ones
             related_tags = list(itertools.islice(related_tags, self.suggested_tags_limit))
 
-        context = {
-            'field': self.bound_field,
-            'field_type': self.field_type(),
-            'related_tags': related_tags,
-        }
-        return mark_safe(render_to_string(self.field_template, context))
-
-
-class TagSuggestingFieldPanel(FieldPanel):
-    def __init__(self, *args, **kwargs):
-        self.suggested_tags_limit = kwargs.pop('suggested_tags_limit', None)
-        self.backend_name = kwargs.pop('backend_name', None)
-
-        super().__init__(*args, **kwargs)
-
-    def bind_to_model(self, model):
-        base = {
-            'model': model,
-            'field_name': self.field_name,
-            'classname': self.classname,
-            'widget': AdminTagSuggestingWidget,
-        }
-        if self.suggested_tags_limit:
-            base['suggested_tags_limit'] = self.suggested_tags_limit
-
-        if self.backend_name:
-            base['backend_name'] = self.backend_name
-
-        return type(str('_TagSuggestingFieldPanel'), (BaseTagSuggestingFieldPanel,), base)
+        return related_tags

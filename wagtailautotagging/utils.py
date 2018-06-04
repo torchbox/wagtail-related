@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from wagtail.wagtailcore.fields import StreamField
+from wagtail.core.fields import StreamField
 
 
 def extract_text(obj):

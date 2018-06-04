@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django.core.management.base import BaseCommand
 
-from wagtail.wagtailcore.models import Page
+from wagtail.core.models import Page
 
 from wagtailautotagging import get_autotagging_backend
 

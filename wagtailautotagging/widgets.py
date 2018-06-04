@@ -1,6 +1,6 @@
 import json
 
-from wagtail.wagtailadmin.widgets import AdminTagWidget
+from wagtail.admin.widgets import AdminTagWidget
 
 
 class AdminTagSuggestingWidget(AdminTagWidget):

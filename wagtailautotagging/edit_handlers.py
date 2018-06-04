@@ -17,6 +17,9 @@ class TagSuggestingFieldPanel(FieldPanel):
         suggested_tags_limit=10, backend_name='default',
         *args, **kwargs
 ):
+        # Default widget
+        self.widget = AdminTagSuggestingWidget
+
         super().__init__(field_name, *args, **kwargs)
         self.heading = heading
         self.classname = classname
@@ -27,6 +30,7 @@ class TagSuggestingFieldPanel(FieldPanel):
     def clone(self):
         return self.__class__(
             field_name=self.field_name,
+            widget=self.widget,
             heading=self.heading,
             classname=self.classname,
             help_text=self.help_text,

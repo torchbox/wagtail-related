@@ -1,5 +1,6 @@
 function initTagSuggestingField(id) {
-    $(document).on('ready', function () {
+    $(document).ready(function () {
+
         var $tagitField = $('#' + id);
         var $tagitFieldContainer = $tagitField.parents('.field-content');
         var $tagSuggestionsContainer = $tagitFieldContainer.find('.tag-suggestions');
@@ -50,6 +51,7 @@ function initTagSuggestingField(id) {
     }
 
     function getTagSuggestionSelector(tagLabel) {
+        // FIXME: Escape quotes, becase tags like "President's Letter" will fail here.
         return ".tag[data-tag='" + normalizeTagLabel(tagLabel) + "']";
     }
 }

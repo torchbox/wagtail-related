@@ -56,16 +56,14 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
 
         return tag_names
 
+    # TODO: Decide if we want to make it "public"
     def _get_similar_items(self, obj):
-        like_text = extract_text(obj)
-        if not like_text:
-            return []
-
-        model = obj.__class__
+        obj = obj.specific
+        model = obj.specific_class
 
         params = dict(
             index=self.search_backend.get_index_for_model(model).name,
-            body=self._get_query(like_text),
+            body=self._get_query(obj),
             _source=False,
             from_=0,
             stored_fields='pk'
@@ -93,18 +91,32 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
                 # Just ignore, if there is not obj with this pk
                 pass
 
-    def _get_query(self, like_text):
+    def _get_query(self, obj):
+        model = obj.specific_class
+        model_index = self.search_backend.get_index_for_model(model)
+        model_mapping = model_index.mapping_class(model)
+
         query = {
             "query": {
                 "more_like_this": {
-                    # It's possible to specify `fields` to search, so we can use autotagging_source_fields,
-                    # but by default elasticsearch uses all string fields to find similar documents.
-                    "like": like_text,
+                    "like": [
+                        {
+                            # TODO: Check if we can remove index. It doesn't look nececeery
+                            #       becasue we are requestiiong the same index
+                            "_index" : model_index.name,
+                            "_type" : model_mapping.get_document_type(),
+                            "_id" : model_mapping.get_document_id(obj),
+                        }
+                    ],
                     "min_term_freq": self.min_term_freq,
+                    # TODO: Check if we need max_query_terms instead of min_doc_freq here
                     "min_doc_freq": self.min_doc_freq
                 }
             }
         }
+
+        import json
+        print(json.dumps(query))
 
         return query
 

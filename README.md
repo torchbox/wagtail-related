@@ -1,4 +1,3 @@
-# wagtailautotagging
+# wagtailrelated
 
-A module for Wagtail that provides auto tagging functionality for Wagtail.
-
+A module for Wagtail that finds related pages and tags for your pages.

@@ -6,8 +6,8 @@ from django.utils.translation import ugettext as _
 
 from wagtail.admin.edit_handlers import FieldPanel
 
-from wagtailautotagging import get_autotagging_backend
-from wagtailautotagging.widgets import AdminTagSuggestingWidget
+from wagtailrelated import get_autotagging_backend
+from wagtailrelated.widgets import AdminTagSuggestingWidget
 
 
 class TagSuggestingFieldPanel(FieldPanel):
@@ -38,7 +38,7 @@ class TagSuggestingFieldPanel(FieldPanel):
             backend_name=self.backend_name,
         )
 
-    object_template = "wagtailautotagging/edit_handlers/single_field_panel.html"
+    object_template = "wagtailrelated/edit_handlers/single_field_panel.html"
 
     def render_as_object(self):
         return mark_safe(render_to_string(self.object_template, {
@@ -48,7 +48,7 @@ class TagSuggestingFieldPanel(FieldPanel):
             'related_tags': self.get_related_tags(),
         }))
 
-    field_template = 'wagtailautotagging/edit_handlers/field_panel_field.html'
+    field_template = 'wagtailrelated/edit_handlers/field_panel_field.html'
 
     def render_as_field(self):
         context = {

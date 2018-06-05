@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 from wagtail.core.models import Page
 
-from wagtailautotagging import get_autotagging_backend
+from wagtailrelated import get_autotagging_backend
 
 
 class Command(BaseCommand):

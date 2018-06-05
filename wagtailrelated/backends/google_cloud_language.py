@@ -4,8 +4,8 @@ from google.cloud.language import enums
 from google.cloud.language import types
 from google.oauth2.service_account import Credentials
 
-from wagtailautotagging.backends.base import BaseAutotaggingBackend
-from wagtailautotagging.utils import extract_text
+from wagtailrelated.backends.base import BaseAutotaggingBackend
+from wagtailrelated.utils import extract_text
 
 
 class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):

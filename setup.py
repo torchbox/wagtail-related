@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from wagtailautotagging import __version__
+from wagtailrelated import __version__
 
 from setuptools import setup, find_packages
 
@@ -22,16 +22,16 @@ dandelion_extras = [
 
 
 setup(
-    name='wagtailautotagging',
+    name='wagtailrelated',
     version=__version__,
-    description='A module for Wagtail that provides auto tagging functionality for Wagtail.',
+    description='A module for Wagtail that finds related pages and tags for your pages.',
     author='Mikalai Radchuk',
     author_email='mikalai.radchuk@torchbox.com',
-    url='https://github.com/torchbox/wagtailautotagging',
+    url='https://github.com/torchbox/wagtailrelated',
     packages=find_packages(),
     include_package_data=True,
     license='BSD',
-    long_description='See https://github.com/torchbox/wagtailautotagging for details',
+    long_description='See https://github.com/torchbox/wagtailrelated for details',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

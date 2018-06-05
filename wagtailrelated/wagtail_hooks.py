@@ -9,7 +9,7 @@ def editor_js():
         """
             <script src="{}"></script>
         """,
-        static('wagtailautotagging/js/admin_widget.js'),
+        static('wagtailrelated/js/admin_widget.js'),
     )
 
 
@@ -19,5 +19,5 @@ def editor_css():
         """
             <link rel="stylesheet" href="{}">
         """,
-        static('wagtailautotagging/css/admin_widget.css'),
+        static('wagtailrelated/css/admin_widget.css'),
     )

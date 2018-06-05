@@ -5,8 +5,8 @@ from wagtail.core.models import Page
 from wagtail.search.backends import get_search_backend
 from wagtail.search.index import Indexed
 
-from wagtailautotagging.backends.base import BaseAutotaggingBackend
-from wagtailautotagging.utils import extract_text
+from wagtailrelated.backends.base import BaseAutotaggingBackend
+from wagtailrelated.utils import extract_text
 
 
 class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):

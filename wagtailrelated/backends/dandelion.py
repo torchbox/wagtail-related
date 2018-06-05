@@ -3,8 +3,8 @@ from collections import OrderedDict
 import requests
 from django.utils.text import Truncator
 
-from wagtailautotagging.backends.base import BaseAutotaggingBackend
-from wagtailautotagging.utils import extract_text
+from wagtailrelated.backends.base import BaseAutotaggingBackend
+from wagtailrelated.utils import extract_text
 
 
 class DandelionAutotaggingBackend(BaseAutotaggingBackend):

@@ -81,6 +81,7 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
         else:
             queryset = model.objects.all()
 
+        # TODO: Annotate each object with score
         results_dict = queryset.in_bulk(pks)
 
         # Return results in order given by Elasticsearch
@@ -114,9 +115,6 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
                 }
             }
         }
-
-        import json
-        print(json.dumps(query))
 
         return query
 

@@ -26,8 +26,9 @@ class PageTypeField(Field):
 class RelatedPageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
-        fields = ('id', 'title', 'type', 'url')
+        fields = ('id', 'title', 'type', 'url', 'score')
 
     # TODO: Add the score field
     type = PageTypeField()
     url = PageHtmlUrlField()
+    score = serializers.FloatField(source='_score')

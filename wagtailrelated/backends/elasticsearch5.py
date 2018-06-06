@@ -71,8 +71,13 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
 
         hits = self.search_backend.es.search(**params)
 
-        # Get pks from results
-        pks = [int(hit['fields']['pk'][0]) for hit in hits['hits']['hits']]
+        # Get pks and scores from results
+        pks = []
+        scores = {}
+        for hit in hits['hits']['hits']:
+            pk = int(hit['fields']['pk'][0])
+            pks.append(pk)
+            scores[pk] = hit['_score']
 
         if isinstance(obj, Page):
             # If we work with pages, `queryset` must contain specific objects.
@@ -81,16 +86,18 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
         else:
             queryset = model.objects.all()
 
-        # TODO: Annotate each object with score
         results_dict = queryset.in_bulk(pks)
 
         # Return results in order given by Elasticsearch
         for pk in pks:
             try:
-                yield results_dict[pk]
+                result_obj = results_dict[pk]
             except KeyError:
-                # Just ignore, if there is not obj with this pk
-                pass
+                # Just ignore, if there is no obj with this pk
+                continue
+
+            result_obj._score = scores[pk]
+            yield result_obj
 
     def _get_query(self, obj):
         model = obj.specific_class

@@ -2,7 +2,6 @@ import itertools
 
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
 
 from wagtail.admin.edit_handlers import FieldPanel
 
@@ -16,7 +15,7 @@ class TagSuggestingFieldPanel(FieldPanel):
         self, field_name, heading='', classname='', help_text='',
         suggested_tags_limit=10, backend_name='default',
         *args, **kwargs
-):
+    ):
         # Default widget
         self.widget = AdminTagSuggestingWidget
 

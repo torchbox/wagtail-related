@@ -6,7 +6,6 @@ from wagtail.search.backends import get_search_backend
 from wagtail.search.index import Indexed
 
 from wagtailrelated.backends.base import BaseRelatedBackend
-from wagtailrelated.utils import extract_text
 
 
 class Elasticsearch5RelatedBackend(BaseRelatedBackend):
@@ -150,15 +149,15 @@ class Elasticsearch5RelatedBackend(BaseRelatedBackend):
 
     def _get_more_like_this_query(self, obj, model_mapping):
         query = {
-            "more_like_this": {
-                "like": [
+            'more_like_this': {
+                'like': [
                     {
-                        "_type" : model_mapping.get_document_type(),
-                        "_id" : model_mapping.get_document_id(obj),
+                        '_type': model_mapping.get_document_type(),
+                        '_id': model_mapping.get_document_id(obj),
                     }
                 ],
-                "min_term_freq": self.min_term_freq,
-                "min_doc_freq": self.min_doc_freq
+                'min_term_freq': self.min_term_freq,
+                'min_doc_freq': self.min_doc_freq
             }
         }
 

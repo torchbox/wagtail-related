@@ -2,6 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from wagtail.api.v2.utils import page_models_from_string
 from wagtail.core.models import Page
+
 from wagtailrelated import get_backend
 from wagtailrelated.api.exceptions import BadRequestError
 from wagtailrelated.api.serializers import RelatedPageSerializer

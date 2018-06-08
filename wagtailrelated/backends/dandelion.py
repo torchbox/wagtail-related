@@ -1,7 +1,8 @@
 from collections import OrderedDict
 
-import requests
 from django.utils.text import Truncator
+
+import requests
 
 from wagtailrelated.backends.base import BaseRelatedBackend
 from wagtailrelated.utils import extract_text

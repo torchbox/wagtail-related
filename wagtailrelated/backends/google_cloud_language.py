@@ -1,7 +1,7 @@
 from django.utils.text import Truncator
+
 from google.cloud import language
-from google.cloud.language import enums
-from google.cloud.language import types
+from google.cloud.language import enums, types
 from google.oauth2.service_account import Credentials
 
 from wagtailrelated.backends.base import BaseRelatedBackend

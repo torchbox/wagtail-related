@@ -32,10 +32,12 @@ class Elasticsearch5RelatedBackend(BaseRelatedBackend):
         model = obj.specific_class
 
         limit = kwargs.get('limit', 20)
+        content_types = kwargs.get('content_types')
+        exclude_pks = kwargs.get('exclude_pks')
 
         params = dict(
             index=self.search_backend.get_index_for_model(model).name,
-            body=self._get_query(obj),
+            body=self._get_query(obj, content_types, exclude_pks),
             _source=False,
             from_=0,
             size=limit,
@@ -101,24 +103,62 @@ class Elasticsearch5RelatedBackend(BaseRelatedBackend):
 
         return tag_names
 
-    def _get_query(self, obj):
+    def _get_query(self, obj, content_types, exclude_pks):
         model = obj.specific_class
         model_index = self.search_backend.get_index_for_model(model)
         model_mapping = model_index.mapping_class(model)
 
         query = {
-            "query": {
-                "more_like_this": {
-                    "like": [
-                        {
-                            "_type" : model_mapping.get_document_type(),
-                            "_id" : model_mapping.get_document_id(obj),
-                        }
-                    ],
-                    "min_term_freq": self.min_term_freq,
-                    # TODO: Check if we need max_query_terms instead of min_doc_freq here
-                    "min_doc_freq": self.min_doc_freq
+            'query': {
+                'bool': {
+                    'must': [
+                        self._get_more_like_this_query(obj, model_mapping),
+                        self._get_filter_query(model_index, content_types, exclude_pks),
+                    ]
                 }
+            }
+        }
+
+        return query
+
+    def _get_filter_query(self, model_index, content_types, exclude_pks):
+        content_type_strings = [
+            model_index.mapping_class(model).get_content_type()
+            for model in content_types
+        ]
+
+        query = {}
+        if content_types:
+            query.update({
+                'must': {
+                    'terms': {
+                        'content_type': content_type_strings,
+                    }
+                }
+            })
+
+        if exclude_pks:
+            query.update({
+                'must_not': {
+                    'terms': {
+                        'pk': exclude_pks,
+                    }
+                }
+            })
+
+        return {'bool': query} if len(query) > 0 else {}
+
+    def _get_more_like_this_query(self, obj, model_mapping):
+        query = {
+            "more_like_this": {
+                "like": [
+                    {
+                        "_type" : model_mapping.get_document_type(),
+                        "_id" : model_mapping.get_document_id(obj),
+                    }
+                ],
+                "min_term_freq": self.min_term_freq,
+                "min_doc_freq": self.min_doc_freq
             }
         }
 

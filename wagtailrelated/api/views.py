@@ -50,13 +50,12 @@ class RelatedPagesList(generics.ListAPIView):
                 except ValueError:
                     raise BadRequestError('exclude is not a list of integers')
 
-        # TODO: Filtering by content type
-        # TODO: excludsion list
-
         backend = get_backend()
         related_pages = backend.get_similar_items(
             more_like_this_page,
             limit=limit,
+            content_types=models,
+            exclude_pks=exclude_ids,
         )
 
         serializer = self.serializer_class(related_pages, many=True)

@@ -4,7 +4,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from wagtail.api.v2.utils import page_models_from_string
 from wagtail.core.models import Page
-from wagtailrelated import get_autotagging_backend
+from wagtailrelated import get_backend
 from wagtailrelated.api.exceptions import BadRequestError
 from wagtailrelated.api.serializers import RelatedPageSerializer
 
@@ -45,9 +45,10 @@ class RelatedPagesList(generics.ListAPIView):
             raise BadRequestError('Limit is less than {} or more than {}'.format(self.min_limit, self.max_limit))
 
         # TODO: Filtering by content type
+        # TODO: Proper limit implementation
         # TODO: excludsion list
 
-        backend = get_autotagging_backend()
+        backend = get_backend()
         related_pages = backend._get_similar_items(more_like_this_page)
         related_pages = itertools.islice(related_pages, limit)
 

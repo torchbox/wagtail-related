@@ -4,11 +4,11 @@ from google.cloud.language import enums
 from google.cloud.language import types
 from google.oauth2.service_account import Credentials
 
-from wagtailrelated.backends.base import BaseAutotaggingBackend
+from wagtailrelated.backends.base import BaseRelatedBackend
 from wagtailrelated.utils import extract_text
 
 
-class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):
+class GoogleCloudLanguageRelatedBackend(BaseRelatedBackend):
     chars_per_text_record = 1000
 
     def __init__(self, *arg, **kwargs):
@@ -49,4 +49,4 @@ class GoogleCloudLanguageAutotaggingBackend(BaseAutotaggingBackend):
 
 
 # Shortcut
-AutotaggingBackend = GoogleCloudLanguageAutotaggingBackend
+RelatedBackend = GoogleCloudLanguageRelatedBackend

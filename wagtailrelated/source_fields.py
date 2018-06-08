@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class AutotaggingSourceField(object):
+class RelatedSourceField(object):
     def __init__(self, field_name):
         self.field_name = field_name
 

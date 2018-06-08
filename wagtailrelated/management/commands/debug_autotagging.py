@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 
 from wagtail.core.models import Page
 
-from wagtailrelated import get_autotagging_backend
+from wagtailrelated import get_backend
 
 
 class Command(BaseCommand):
@@ -20,7 +20,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        backend = get_autotagging_backend(options['backend'])
+        backend = get_backend(options['backend'])
         page = Page.objects.get(pk=options['page_id']).specific
 
         tags = backend.get_tags(page)

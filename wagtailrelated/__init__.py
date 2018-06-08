@@ -8,23 +8,23 @@ __version__ = '0.1.0'
 default_app_config = 'wagtailrelated.apps.WagtailRelatedAppConfig'
 
 
-class InvalidAutotaggingBackendError(ImproperlyConfigured):
+class InvalidBackendError(ImproperlyConfigured):
     pass
 
 
-def get_autotagging_backend_config():
-    backends = getattr(settings, 'WAGTAIL_AUTOTAGGING_BACKENDS', {})
+def get_backend_config():
+    backends = getattr(settings, 'WAGTAIL_RELATED_BACKENDS', {})
 
     return backends
 
 
 def import_backend(dotted_path):
     backend_module = import_module(dotted_path)
-    return backend_module.AutotaggingBackend
+    return backend_module.RelatedBackend
 
 
-def get_autotagging_backend(backend='default', **kwargs):
-    backends = get_autotagging_backend_config()
+def get_backend(backend='default', **kwargs):
+    backends = get_backend_config()
 
     # Try to find the backend
     conf = backends[backend]
@@ -38,7 +38,7 @@ def get_autotagging_backend(backend='default', **kwargs):
     try:
         backend_cls = import_backend(backend)
     except ImportError as e:
-        raise InvalidAutotaggingBackendError("Could not find backend '%s': %s" % (
+        raise InvalidBackendError("Could not find backend '%s': %s" % (
             backend, e))
 
     # Create backend

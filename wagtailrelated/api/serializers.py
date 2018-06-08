@@ -28,7 +28,6 @@ class RelatedPageSerializer(serializers.ModelSerializer):
         model = Page
         fields = ('id', 'title', 'type', 'url', 'score')
 
-    # TODO: Add the score field
     type = PageTypeField()
     url = PageHtmlUrlField()
     score = serializers.FloatField(source='_score')

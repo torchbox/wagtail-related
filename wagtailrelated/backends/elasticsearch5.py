@@ -5,11 +5,11 @@ from wagtail.core.models import Page
 from wagtail.search.backends import get_search_backend
 from wagtail.search.index import Indexed
 
-from wagtailrelated.backends.base import BaseAutotaggingBackend
+from wagtailrelated.backends.base import BaseRelatedBackend
 from wagtailrelated.utils import extract_text
 
 
-class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
+class Elasticsearch5RelatedBackend(BaseRelatedBackend):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, **kwargs)
 
@@ -109,9 +109,6 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
                 "more_like_this": {
                     "like": [
                         {
-                            # TODO: Check if we can remove index. It doesn't look nececeery
-                            #       becasue we are requestiiong the same index
-                            "_index" : model_index.name,
                             "_type" : model_mapping.get_document_type(),
                             "_id" : model_mapping.get_document_id(obj),
                         }
@@ -127,4 +124,4 @@ class Elasticsearch5AutotaggingBackend(BaseAutotaggingBackend):
 
 
 # Shortcut
-AutotaggingBackend = Elasticsearch5AutotaggingBackend
+RelatedBackend = Elasticsearch5RelatedBackend

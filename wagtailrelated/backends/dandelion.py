@@ -3,11 +3,11 @@ from collections import OrderedDict
 import requests
 from django.utils.text import Truncator
 
-from wagtailrelated.backends.base import BaseAutotaggingBackend
+from wagtailrelated.backends.base import BaseRelatedBackend
 from wagtailrelated.utils import extract_text
 
 
-class DandelionAutotaggingBackend(BaseAutotaggingBackend):
+class DandelionRelatedBackend(BaseRelatedBackend):
     entity_extraction_api = 'https://api.dandelion.eu/datatxt/nex/v1/'
     chars_per_text_record = 4000
 
@@ -65,4 +65,4 @@ class DandelionAutotaggingBackend(BaseAutotaggingBackend):
 
 
 # Shortcut
-AutotaggingBackend = DandelionAutotaggingBackend
+RelatedBackend = DandelionRelatedBackend

@@ -4,14 +4,14 @@ from wagtail.core.fields import StreamField
 
 def extract_text(obj):
     """Extracts data, concatenates and removes html tags
-    from fields listed in a obj.autotagging_source_fields list.
+    from fields listed in a obj.related_source_fields list.
     """
-    autotagging_source_fields = getattr(obj._meta.model, 'autotagging_source_fields', None)
-    if not autotagging_source_fields:
+    related_source_fields = getattr(obj._meta.model, 'related_source_fields', None)
+    if not related_source_fields:
         return
 
     html_pieces = []
-    for source_field in autotagging_source_fields:
+    for source_field in related_source_fields:
         field = source_field.get_field(obj.__class__)
         field_value = source_field.get_value(obj)
         if isinstance(field, StreamField):

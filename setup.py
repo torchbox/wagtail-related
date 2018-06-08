@@ -22,16 +22,16 @@ dandelion_extras = [
 
 
 setup(
-    name='wagtailrelated',
+    name='wagtail-related',
     version=__version__,
     description='A module for Wagtail that finds related pages and tags for your pages.',
     author='Mikalai Radchuk',
     author_email='mikalai.radchuk@torchbox.com',
-    url='https://github.com/torchbox/wagtailrelated',
+    url='https://github.com/torchbox/wagtail-related',
     packages=find_packages(),
     include_package_data=True,
     license='BSD',
-    long_description='See https://github.com/torchbox/wagtailrelated for details',
+    long_description='See https://github.com/torchbox/wagtail-related for details',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

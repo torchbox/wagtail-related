@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 
 from wagtail.admin.edit_handlers import FieldPanel
 
-from wagtailrelated import get_autotagging_backend
+from wagtailrelated import get_backend
 from wagtailrelated.widgets import AdminTagSuggestingWidget
 
 
@@ -59,7 +59,7 @@ class TagSuggestingFieldPanel(FieldPanel):
         return mark_safe(render_to_string(self.field_template, context))
 
     def get_related_tags(self):
-        backend = get_autotagging_backend(self.backend_name)
+        backend = get_backend(self.backend_name)
 
         # TODO: Decide if we need cache here
         related_tags = None

@@ -5,4 +5,7 @@ class BaseRelatedBackend(object):
         self.params = params
 
     def get_tags(self, obj):
-        raise NotImplementedError("Related backend must implement the get_tags method")
+        raise NotImplementedError("Related backend does not support the get_tags method")
+
+    def get_similar_items(self, obj, **kwargs):
+        raise NotImplementedError("Related backend does not support the get_similar_items method")

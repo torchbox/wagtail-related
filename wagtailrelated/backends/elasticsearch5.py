@@ -23,49 +23,22 @@ class Elasticsearch5RelatedBackend(BaseRelatedBackend):
         if not isinstance(obj, Indexed):
             return []
 
-        results = self._get_similar_items(obj)
+        results = self.get_similar_items(obj)
         tags = self._extract_tags(results)
         return tags
 
-    def _extract_tags(self, results):
-        tag_pks = []
-        tag_counts = {}
-
-        for result_obj in results:
-            for field in result_obj._meta.get_fields():
-                if field.is_relation and issubclass(field.related_model, TaggedItemBase):
-                    field = getattr(result_obj, field.name)
-                    obj_tag_pks = list(field.values_list('tag_id', flat=True))
-                    tag_pks += obj_tag_pks
-                    for obj_tag_pk in obj_tag_pks:
-                        tag_counts[obj_tag_pk] = tag_counts.get(obj_tag_pk, 0) + 1
-
-        if not tag_pks:
-            return []
-
-        tag_counts = OrderedDict(sorted(tag_counts.items(), key=lambda i: i[1], reverse=True))
-
-        results_dict = Tag.objects.in_bulk(tag_pks)
-        tag_names = []
-        for tag_pk in tag_counts.keys():
-            try:
-                tag_names.append(results_dict[tag_pk].name)
-            except KeyError:
-                # Just ignore, if there is not obj with this pk
-                pass
-
-        return tag_names
-
-    # TODO: Decide if we want to make it "public"
-    def _get_similar_items(self, obj):
+    def get_similar_items(self, obj, **kwargs):
         obj = obj.specific
         model = obj.specific_class
+
+        limit = kwargs.get('limit', 20)
 
         params = dict(
             index=self.search_backend.get_index_for_model(model).name,
             body=self._get_query(obj),
             _source=False,
             from_=0,
+            size=limit,
             stored_fields='pk'
         )
 
@@ -98,6 +71,35 @@ class Elasticsearch5RelatedBackend(BaseRelatedBackend):
 
             result_obj._score = scores[pk]
             yield result_obj
+
+    def _extract_tags(self, results):
+        tag_pks = []
+        tag_counts = {}
+
+        for result_obj in results:
+            for field in result_obj._meta.get_fields():
+                if field.is_relation and issubclass(field.related_model, TaggedItemBase):
+                    field = getattr(result_obj, field.name)
+                    obj_tag_pks = list(field.values_list('tag_id', flat=True))
+                    tag_pks += obj_tag_pks
+                    for obj_tag_pk in obj_tag_pks:
+                        tag_counts[obj_tag_pk] = tag_counts.get(obj_tag_pk, 0) + 1
+
+        if not tag_pks:
+            return []
+
+        tag_counts = OrderedDict(sorted(tag_counts.items(), key=lambda i: i[1], reverse=True))
+
+        results_dict = Tag.objects.in_bulk(tag_pks)
+        tag_names = []
+        for tag_pk in tag_counts.keys():
+            try:
+                tag_names.append(results_dict[tag_pk].name)
+            except KeyError:
+                # Just ignore, if there is not obj with this pk
+                pass
+
+        return tag_names
 
     def _get_query(self, obj):
         model = obj.specific_class

@@ -1,5 +1,3 @@
-import itertools
-
 from rest_framework import generics
 from rest_framework.response import Response
 from wagtail.api.v2.utils import page_models_from_string
@@ -45,12 +43,13 @@ class RelatedPagesList(generics.ListAPIView):
             raise BadRequestError('Limit is less than {} or more than {}'.format(self.min_limit, self.max_limit))
 
         # TODO: Filtering by content type
-        # TODO: Proper limit implementation
         # TODO: excludsion list
 
         backend = get_backend()
-        related_pages = backend._get_similar_items(more_like_this_page)
-        related_pages = itertools.islice(related_pages, limit)
+        related_pages = backend.get_similar_items(
+            more_like_this_page,
+            limit=limit,
+        )
 
         serializer = self.serializer_class(related_pages, many=True)
         return Response(serializer.data)

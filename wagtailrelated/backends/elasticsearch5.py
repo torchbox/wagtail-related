@@ -1,22 +1,36 @@
 from collections import OrderedDict
 
+from django.core.exceptions import ImproperlyConfigured
+
 from taggit.models import Tag, TaggedItemBase
 from wagtail.core.models import Page
 from wagtail.search.backends import get_search_backend
+from wagtail.search.backends.elasticsearch5 import Elasticsearch5SearchBackend
 from wagtail.search.index import Indexed
 
 from wagtailrelated.backends.base import BaseRelatedBackend
+
+
+class InvalidSearchBackendError(ImproperlyConfigured):
+    pass
 
 
 class Elasticsearch5RelatedBackend(BaseRelatedBackend):
     def __init__(self, *arg, **kwargs):
         super().__init__(*arg, **kwargs)
 
-        # TODO: Add check that wagtailsearch_backend is Elasticsearch5SearchBackend
         wagtailsearch_backend = self.params.get('wagtailsearch_backend', 'default')
+        search_backend = get_search_backend(backend=wagtailsearch_backend)
+        if not isinstance(search_backend, Elasticsearch5SearchBackend):
+            raise InvalidSearchBackendError(
+                'Elasticsearch5RelatedBackend was configured to use '
+                'WAGTAILSEARCH_BACKENDS[\'{}\'] which is not '
+                'wagtail.search.backends.elasticsearch5 backend'.format(wagtailsearch_backend)
+            )
+
+        self.search_backend = search_backend
         self.min_term_freq = self.params.get('min_term_freq', 1)
         self.min_doc_freq = self.params.get('min_doc_freq', 1)
-        self.search_backend = get_search_backend(backend=wagtailsearch_backend)
 
     def get_tags(self, obj):
         if not isinstance(obj, Indexed):

@@ -42,6 +42,14 @@ class RelatedPagesList(generics.ListAPIView):
         if not self.min_limit <= limit <= self.max_limit:
             raise BadRequestError('Limit is less than {} or more than {}'.format(self.min_limit, self.max_limit))
 
+        exclude_ids = exclude_ids.split(',') if exclude_ids else []
+        if len(exclude_ids) > 0:
+            for i, val in enumerate(exclude_ids):
+                try:
+                    exclude_ids[i] = int(val)
+                except ValueError:
+                    raise BadRequestError('exclude is not a list of integers')
+
         # TODO: Filtering by content type
         # TODO: excludsion list
 

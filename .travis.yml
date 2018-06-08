@@ -8,8 +8,8 @@ dist: trusty
 sudo: false
 
 install:
-  - pip install wheel flake8 isort
-  - pip install -e .[testing,docs]
+  - pip install wheel
+  - pip install -e .[testing]
 
 script:
   - flake8 wagtailrelated

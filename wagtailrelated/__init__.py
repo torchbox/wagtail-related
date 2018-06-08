@@ -3,7 +3,6 @@ from importlib import import_module
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-__version__ = '0.1.0'
 
 default_app_config = 'wagtailrelated.apps.WagtailRelatedAppConfig'
 

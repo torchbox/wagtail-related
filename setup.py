@@ -1,8 +1,11 @@
 #!/usr/bin/env python
-
-from wagtailrelated import __version__
-
 from setuptools import setup, find_packages
+
+# Testing dependencies
+testing_extras = [
+    'flake8>=3.5.0',
+    'isort>=4.3.4',
+]
 
 gc_language_extras = [
     'google-cloud-language>=0.29.0,<0.30',
@@ -23,7 +26,7 @@ dandelion_extras = [
 
 setup(
     name='wagtail-related',
-    version=__version__,
+    version='0.1.0',
     description='A module for Wagtail that finds related pages and tags for your pages.',
     author='Mikalai Radchuk',
     author_email='mikalai.radchuk@torchbox.com',
@@ -50,6 +53,7 @@ setup(
         'wagtail>=2.0',
     ],
     extras_require={
+        'testing': testing_extras,
         'gc_language': gc_language_extras,
         'elasticsearch5': elasticsearch5_extras,
         'dandelion': dandelion_extras,

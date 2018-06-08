@@ -122,13 +122,13 @@ class Elasticsearch5RelatedBackend(BaseRelatedBackend):
         return query
 
     def _get_filter_query(self, model_index, content_types, exclude_pks):
-        content_type_strings = [
-            model_index.mapping_class(model).get_content_type()
-            for model in content_types
-        ]
-
         query = {}
+
         if content_types:
+            content_type_strings = [
+                model_index.mapping_class(model).get_content_type()
+                for model in content_types
+            ]
             query.update({
                 'must': {
                     'terms': {

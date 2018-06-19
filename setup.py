@@ -34,7 +34,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     license='BSD',
-    long_description='See https://github.com/torchbox/wagtail-related for details',
+    long_description=open('README.md').read(),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

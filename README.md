@@ -56,3 +56,8 @@ if your Elasticsearch 5 backend exists under the `default` key.
 If your project has multiple Wagtail search backends and your Elasticsearch 5 search backend
 has different key, see how you need to modify `WAGTAIL_RELATED_BACKENDS`
 [here](./docs/related_backends.md#set-up-wagtail_related_backends-use-non-default-search-backend).
+
+## How to use
+
+The package provides an API to get related pages. See the
+[API documentation](./docs/api.md).

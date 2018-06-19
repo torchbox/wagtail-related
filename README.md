@@ -51,13 +51,13 @@ built-in search backend. This means that you should have the
 [`WAGTAILSEARCH_BACKENDS` setting](http://docs.wagtail.io/en/v2.1/topics/search/backends.html#elasticsearch-backend)
 comfigured with `wagtail.search.backends.elasticsearch5` in your project.
 
-Settings shown in this insturction will work fine,
+Settings shown in this instruction will work fine,
 if your Elasticsearch 5 backend exists under the `default` key.
 If your project has multiple Wagtail search backends and your Elasticsearch 5 search backend
 has different key, see how you need to modify `WAGTAIL_RELATED_BACKENDS`
-[here](./docs/related_backends.md#set-up-wagtail_related_backends-use-non-default-search-backend).
+[here](https://github.com/torchbox/wagtail-related/blob/master/docs/related_backends.md#set-up-wagtail_related_backends-use-non-default-search-backend).
 
 ## How to use
 
 The package provides an API to get related pages. See the
-[API documentation](./docs/api.md).
+[API documentation](https://github.com/torchbox/wagtail-related/blob/master/docs/api.md).
